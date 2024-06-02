@@ -2,56 +2,120 @@ package nogo
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/tongque0/gotack"
 )
 
-// EvaluateFunc 根据当前棋盘状态评估分数，这里只是一个简化的示例。
-// 实际的评估函数可能会更加复杂。
-func EvaluateFunc(board gotack.Board, isMaxPlayer bool, opts ...interface{}) float64 {
-
-	NoGoBoard, ok := board.(*NoGoBoard)
+func EvaluateFunc(opt *gotack.EvalOptions) float64 {
+	NoGoBoard, ok := opt.Board.(*NoGoBoard)
 	if !ok {
 		fmt.Println("EvaluateFunc called with a board type that is not *NoGoBoard")
-		return 0.0 // 或者处理这种情况的其他方式，比如返回一个默认分数或错误处理
+		return 0.0
 	}
-	// 解析opts，获取轮数
-	var turn int
-	if len(opts) > 0 {
-		turnVal, ok := opts[0].(int) // 类型断言，将opts的第一个元素转换为整数
-		if !ok {
-			fmt.Println("EvaluateFunc: Expected an integer for the turn, but got something else.")
-			// 处理错误或者使用默认值
-		} else {
-			turn = turnVal
+
+	step := opt.Step
+	countKey := fmt.Sprintf("count_%d", step) // 为当前步骤定义唯一的键名
+
+	// 清除所有以 "count_" 开头的键，保证不保留过去的步数统计
+	for k := range opt.Extra {
+		if strings.HasPrefix(k, "count_") && k != countKey {
+			delete(opt.Extra, k)
 		}
 	}
-	// TODO: 根据GameBoard的当前状态和isMaxPlayer，实现具体的评估逻辑
-	// 这里需要开发者根据具体游戏的规则和逻辑来填充评分算法
-	// 示例中仅调用GameBoard的Print方法来假设进行了评估过程
-	// NoGoBoard.Print()
 
-	// 返回评估分数，这个分数应该基于GameBoard的状态和isMaxPlayer计算得出
-	value := NoGoBoard.valuepoint(turn)
-	return value // 示例返回值，实际开发中应根据游戏逻辑修改
+	// 检查当前步骤的键是否已存在于映射中，如果不存在，初始化为0
+	if _, exists := opt.Extra[countKey]; !exists {
+		opt.Extra[countKey] = 0
+	}
+
+	// 递增当前步骤的计数值
+	opt.Extra[countKey] = opt.Extra[countKey].(int) + 1
+
+	// 调用NoGoBoard的valuepoint方法进行评分
+	value := NoGoBoard.valuepoint(step)
+	return value
 }
 
 func (board *NoGoBoard) valuepoint(step int) float64 {
-	// Pb, Pw := 0, 0
-	// for x, row := range board.Board {
-	// 	for y, _ := range row {
-	// 		if !board.judgeAvailable(x, y, 1) {
-	// 			Pb++
-	// 		}
-	// 		if !board.judgeAvailable(x, y, 2) {
-	// 			Pw++
-	// 		}
-	// 	}
-	// }
-	// return float64(Pb + Pw - step*2)
-	src := rand.NewSource(time.Now().UnixNano())
-	r := rand.New(src)
-	return r.Float64()
+	Pb, Pw := 0, 0
+	for x, row := range board.Board {
+		for y := range row {
+			if !board.judgeAvailable(x, y, true) {
+				Pb++
+			}
+			if !board.judgeAvailable(x, y, false) {
+				Pw++
+			}
+		}
+	}
+	return float64(Pb + Pw - step*2)
+}
+
+// GetMHDMove 使用曼哈顿距离来选择最佳走法，并优先考虑位置 (5,5)
+func (board *NoGoBoard) GetMHDMove(moves []gotack.Move) gotack.Move {
+	if len(moves) == 0 {
+		return nil // 如果没有最佳走法，返回 nil
+	}
+
+	// 检查中心位置 (5,5) 是否空闲
+	centerPos := Position{X: 4, Y: 4} // 0-based index, so (5,5) is (4,4)
+	if board.Board[centerPos.X][centerPos.Y] == 0 {
+		for _, move := range moves {
+			nogoMove, ok := move.(NoGoMove)
+			if !ok {
+				continue
+			}
+			if nogoMove.Pos == centerPos {
+				return nogoMove
+			}
+		}
+	}
+
+	// 初始化随机数生成器
+	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	// 计算曼哈顿距离的最小值
+	minDistances := make(map[Position]float64)
+	for _, move := range moves {
+		nogoMove, ok := move.(NoGoMove)
+		if !ok {
+			continue
+		}
+
+		minDistance := math.MaxFloat64
+		for x := 0; x < 9; x++ {
+			for y := 0; y < 9; y++ {
+				if board.Board[x][y] != 0 {
+					distance := math.Abs(float64(nogoMove.Pos.X-x)) + math.Abs(float64(nogoMove.Pos.Y-y))
+					if distance < minDistance {
+						minDistance = distance
+					}
+				}
+			}
+		}
+		minDistances[nogoMove.Pos] = minDistance
+	}
+
+	// 找出最小值中的最大值
+	var maxMinDistance float64
+	for _, distance := range minDistances {
+		if distance > maxMinDistance {
+			maxMinDistance = distance
+		}
+	}
+
+	// 找出所有具有最大最小值的点
+	var bestMoves []gotack.Move
+	for pos, distance := range minDistances {
+		if distance == maxMinDistance {
+			bestMoves = append(bestMoves, NoGoMove{Pos: pos})
+		}
+	}
+
+	// 随机选择一个最优解
+	return bestMoves[rng.Intn(len(bestMoves))]
 }
