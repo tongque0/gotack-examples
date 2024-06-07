@@ -36,11 +36,11 @@ func EvaluateFunc(opt *gotack.EvalOptions) float64 {
 	opt.Extra[countKey] = opt.Extra[countKey].(int) + 1
 
 	// 调用NoGoBoard的valuepoint方法进行评分
-	value := NoGoBoard.valuepoint(step)
+	value := NoGoBoard.valuepoint()
 	return value
 }
 
-func (board *NoGoBoard) valuepoint(step int) float64 {
+func (board *NoGoBoard) valuepoint() float64 {
 	Pb, Pw := 0, 0
 	for x, row := range board.Board {
 		for y := range row {
