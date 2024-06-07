@@ -74,6 +74,9 @@ func (b *AmazonBoard) Print() {
 		fmt.Println()
 	}
 }
+func (m AmazonMove) String() string {
+	return fmt.Sprintf("From (%d,%d)\tTo (%d,%d)\tPut (%d,%d)\n", m.From.X, m.From.Y, m.To.X, m.To.Y, m.Put.X, m.Put.Y)
+}
 
 // 步法棋盘
 func (b *AmazonBoard) PrintMoveBoard() {

@@ -60,20 +60,40 @@ func runSearch() {
 		IsMaxPlayer = false
 	}
 	if step < 12 {
-		e = gotack.NewEvaluator(gotack.AlphaBeta, 2, IsMaxPlayer, func(board gotack.Board, isMaxPlayer bool, opts ...interface{}) float64 {
-			return amazon.EvaluateFunc(board.(*amazon.AmazonBoard), isMaxPlayer, step)
-		})
+		e = gotack.NewEvaluator(
+			gotack.AlphaBeta,
+			gotack.NewEvaluatorOptions(
+				gotack.WithBoard(board),
+				gotack.WithDepth(2),
+				gotack.WithIsMaxPlayer(IsMaxPlayer),
+				gotack.WithStep(step),
+				gotack.WithIsDetail(true),
+			),
+			func(opts *gotack.EvalOptions) float64 {
+				return amazon.EvaluateFunc(opts)
+			},
+		)
 	} else {
-		e = gotack.NewEvaluator(gotack.AlphaBeta, 4, IsMaxPlayer, func(board gotack.Board, isMaxPlayer bool, opts ...interface{}) float64 {
-			return amazon.EvaluateFunc(board.(*amazon.AmazonBoard), isMaxPlayer, step)
-		})
+		e = gotack.NewEvaluator(
+			gotack.AlphaBeta,
+			gotack.NewEvaluatorOptions(
+				gotack.WithBoard(board),
+				gotack.WithDepth(4),
+				gotack.WithIsMaxPlayer(IsMaxPlayer),
+				gotack.WithStep(step),
+				gotack.WithIsDetail(true),
+			),
+			func(opts *gotack.EvalOptions) float64 {
+				return amazon.EvaluateFunc(opts)
+			},
+		)
 	}
-	move := e.GetBestMove(board)
-	m, ok := move.(amazon.AmazonMove)
+	move := e.GetBestMove()
+	m, ok := move[0].(amazon.AmazonMove)
 	if !ok {
 		return
 	}
-	board.Move(move)
+	board.Move(move[0])
 	fmt.Printf("move %c%c%c%c%c%c\n", m.From.Y+'A', m.From.X+'A', m.To.Y+'A', m.To.X+'A', m.Put.Y+'A', m.Put.X+'A')
 	step++
 }
