@@ -52,7 +52,8 @@ func (board *NoGoBoard) valuepoint(step int) float64 {
 			}
 		}
 	}
-	return float64(Pb + Pw - step*2)
+	// return float64(Pb + Pw - step*2)
+	return 1.0
 }
 
 // GetMHDMove 使用曼哈顿距离来选择最佳走法，并优先考虑位置 (5,5)

@@ -33,10 +33,6 @@ func main() {
 			// 处理对手行棋
 			board.Move(yourmove)
 			e.EvalOptions.Step++
-			// 生成着法，并保存在step结构中
-			// 注意：你需要根据你的AI逻辑来填充这一部分
-			// 示例：step = generateMove(board, computerSide)
-			// 处理己方行棋
 			bestmove := e.GetBestMove()
 			mm := board.GetMHDMove(bestmove)
 			m, _ := mm.(nogo.NoGoMove)
