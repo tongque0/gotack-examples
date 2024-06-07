@@ -1,3 +1,0 @@
-module dotboxs
-
-go 1.22.1
