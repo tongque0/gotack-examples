@@ -6,3 +6,11 @@ github.com/tongque0/gotack v1.0.4 h1:1G9fnUYV15qP3jl2nLzql88BSG8WW1xNeLobz2NFv8Q
 github.com/tongque0/gotack v1.0.4/go.mod h1:v4A/OUygXaGtdcMDqy7Dlt3YPyGRVtVeZ7s25wjlTNE=
 github.com/tongque0/gotack v1.2.0 h1:DBmJHiSUr4rZ4i+0OjKSFXmayh6ypGGLz99JyySkO4s=
 github.com/tongque0/gotack v1.2.0/go.mod h1:v4A/OUygXaGtdcMDqy7Dlt3YPyGRVtVeZ7s25wjlTNE=
+github.com/tongque0/gotack v1.3.0 h1:vzH2lHN/Fd1MHagg1gQGVfzDZrXu1nfWGR8Vnm/fY/0=
+github.com/tongque0/gotack v1.3.0/go.mod h1:v4A/OUygXaGtdcMDqy7Dlt3YPyGRVtVeZ7s25wjlTNE=
+github.com/tongque0/gotack v1.3.1 h1:JeiqX2cyo+PkWKIOHognBPAf32GIjKWDmZPZyhxoZbo=
+github.com/tongque0/gotack v1.3.1/go.mod h1:v4A/OUygXaGtdcMDqy7Dlt3YPyGRVtVeZ7s25wjlTNE=
+github.com/tongque0/gotack v1.3.2 h1:FbnzZ4qn4MFQu0IS+roPdWO2RbkXBggb764WFPmVE/A=
+github.com/tongque0/gotack v1.3.2/go.mod h1:v4A/OUygXaGtdcMDqy7Dlt3YPyGRVtVeZ7s25wjlTNE=
+github.com/tongque0/gotack v1.3.3 h1:bJ7lYRSYs9BmX0BlQn3qWJG02cP7DLT7ndDog8yb+eI=
+github.com/tongque0/gotack v1.3.3/go.mod h1:v4A/OUygXaGtdcMDqy7Dlt3YPyGRVtVeZ7s25wjlTNE=

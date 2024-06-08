@@ -222,8 +222,10 @@ func (b *AmazonBoard) Hash() uint64 {
 	}
 	return hash
 }
+
+// Clone 创建并返回当前棋盘的一个副本
 func (b *AmazonBoard) Clone() gotack.Board {
-	clone := AmazonBoard{} // 创建一个新的AmazonBoard实例，它是一个二维数组
+	clone := AmazonBoard{} // 创建一个新的 AmazonBoard 实例
 
 	for i := 0; i < 10; i++ {
 		for j := 0; j < 10; j++ {
@@ -232,4 +234,7 @@ func (b *AmazonBoard) Clone() gotack.Board {
 	}
 
 	return &clone // 返回克隆的棋盘指针
+}
+func (b *AmazonBoard) EvaluateFunc(opts gotack.EvalOptions) float64 {
+	return EvaluateFunc(&opts)
 }
