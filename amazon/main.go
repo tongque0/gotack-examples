@@ -24,7 +24,7 @@ func main() {
 	for sc.Scan() {
 		line = sc.Text()
 		if line == "name?" {
-			fmt.Println("name Tack-Amazon")
+			fmt.Println("name MTack")
 		} else if line == "quit" {
 			os.Exit(0)
 		} else if strings.HasPrefix(line, "new") {
@@ -43,6 +43,7 @@ func main() {
 			board[move[3]-'A'][move[2]-'A'] = board[move[1]-'A'][move[0]-'A']
 			board[move[1]-'A'][move[0]-'A'] = amazon.Empty
 			board[move[5]-'A'][move[4]-'A'] = amazon.Arrow
+			step++
 			if !board.IsGameOver() {
 				runSearch()
 			}
@@ -59,35 +60,30 @@ func runSearch() {
 	if color == 2 {
 		IsMaxPlayer = false
 	}
-	if step < 12 {
-		e = gotack.NewEvaluator(
-			gotack.AlphaBeta,
-			gotack.NewEvaluatorOptions(
-				gotack.WithBoard(board),
-				gotack.WithDepth(2),
-				gotack.WithIsMaxPlayer(IsMaxPlayer),
-				gotack.WithStep(step),
-				gotack.WithIsDetail(true),
-			),
-			func(opts *gotack.EvalOptions) float64 {
-				return amazon.EvaluateFunc(opts)
-			},
-		)
-	} else {
-		e = gotack.NewEvaluator(
-			gotack.AlphaBeta,
-			gotack.NewEvaluatorOptions(
-				gotack.WithBoard(board),
-				gotack.WithDepth(4),
-				gotack.WithIsMaxPlayer(IsMaxPlayer),
-				gotack.WithStep(step),
-				gotack.WithIsDetail(true),
-			),
-			func(opts *gotack.EvalOptions) float64 {
-				return amazon.EvaluateFunc(opts)
-			},
-		)
+	// 根据步数动态设置时间限制
+	var searchDetph int
+	switch {
+	case step < 23:
+		searchDetph = 2
+	case step < 50:
+		searchDetph = 3
+	case step < 70:
+		searchDetph = 4
+	default:
+		searchDetph = 5
 	}
+
+	// 创建评估器
+	e = gotack.NewEvaluator(
+		gotack.AlphaBeta,
+		gotack.NewEvaluatorOptions(
+			gotack.WithBoard(board),
+			gotack.WithDepth(searchDetph),
+			gotack.WithIsMaxPlayer(IsMaxPlayer),
+			gotack.WithStep(step),
+			gotack.WithIsDetail(true),
+		),
+	)
 	move := e.GetBestMove()
 	m, ok := move[0].(amazon.AmazonMove)
 	if !ok {

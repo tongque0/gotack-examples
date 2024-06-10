@@ -185,7 +185,6 @@ func (b *AmazonBoard) IsGameOver() bool {
 	// 检查黑方是否还有合法的移动
 	blackMoves := b.GetAllMoves(true) // 假设true代表黑方
 	if len(blackMoves) == 0 {
-		fmt.Print("黑方游戏结束")
 		return true // 黑方没有合法的移动，游戏结束
 	}
 
@@ -211,7 +210,9 @@ func (b *AmazonBoard) getAllChess(color int) []Position {
 	}
 	return positions
 }
-
+func (b *AmazonBoard) EvaluateFunc(opts gotack.EvalOptions) float64 {
+	return EvaluateFunc(&opts)
+}
 func (b *AmazonBoard) Hash() uint64 {
 	var hash uint64 = 0
 	for i := 0; i < 10; i++ {
@@ -234,7 +235,4 @@ func (b *AmazonBoard) Clone() gotack.Board {
 	}
 
 	return &clone // 返回克隆的棋盘指针
-}
-func (b *AmazonBoard) EvaluateFunc(opts gotack.EvalOptions) float64 {
-	return EvaluateFunc(&opts)
 }
