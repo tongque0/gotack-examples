@@ -36,11 +36,11 @@ func EvaluateFunc(opt *gotack.EvalOptions) float64 {
 	opt.Extra[countKey] = opt.Extra[countKey].(int) + 1
 
 	// 调用NoGoBoard的valuepoint方法进行评分
-	value := NoGoBoard.valuepoint()
+	value := NoGoBoard.valuepoint(step)
 	return value
 }
 
-func (board *NoGoBoard) valuepoint() float64 {
+func (board *NoGoBoard) valuepoint(step int) float64 {
 	Pb, Pw := 0, 0
 	for x, row := range board.Board {
 		for y := range row {
@@ -52,8 +52,7 @@ func (board *NoGoBoard) valuepoint() float64 {
 			}
 		}
 	}
-	// return float64(Pb + Pw - step*2)
-	return 1.0
+	return float64(Pb + Pw - step*2)
 }
 
 // GetMHDMove 使用曼哈顿距离来选择最佳走法，并优先考虑位置 (5,5)

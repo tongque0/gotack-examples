@@ -86,6 +86,11 @@ func (b *NoGoBoard) IsGameOver() bool {
 	return true
 }
 
+// EvaluateFunc implements gotack.Board.
+func (b *NoGoBoard) EvaluateFunc(opts gotack.EvalOptions) float64 {
+	return EvaluateFunc(&opts)
+}
+
 func (b *NoGoBoard) Hash() uint64 {
 	// 在这里实现生成棋盘状态的哈希值的逻辑。
 	// 对于不需要置换表的游戏，可以返回0或固定值作为哈希值。
@@ -93,7 +98,7 @@ func (b *NoGoBoard) Hash() uint64 {
 }
 func (b *NoGoBoard) Clone() gotack.Board {
 	// 创建一个新的NoGoBoard实例
-	cloned := NewNoGoBoard()
+	cloned := NoGoBoard{}
 
 	// 复制棋盘上的棋子位置
 	cloned.Board = b.Board
@@ -102,5 +107,5 @@ func (b *NoGoBoard) Clone() gotack.Board {
 	cloned.dfs_air_visit = b.dfs_air_visit
 
 	// 返回复制的棋盘
-	return cloned
+	return &cloned
 }
