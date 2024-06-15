@@ -48,8 +48,10 @@ func main() {
 				runSearch()
 			}
 		} else if line == "end" {
+			amazon.Save()
 			continue
 		} else {
+			amazon.Save()
 			continue
 		}
 	}
@@ -91,5 +93,6 @@ func runSearch() {
 	}
 	board.Move(move[0])
 	fmt.Printf("move %c%c%c%c%c%c\n", m.From.Y+'A', m.From.X+'A', m.To.Y+'A', m.To.X+'A', m.Put.Y+'A', m.Put.X+'A')
+	amazon.AddRecord(m.From.Y+'a', 10-m.From.X, m.To.Y+'a', 10-m.To.X, m.Put.Y+'a', 10-m.Put.X)
 	step++
 }
