@@ -8,10 +8,10 @@
     "Event": "大学生计算机博弈大赛",
     "game": [
         {
-            "piece": "r(d2,h)"
+            "piece": "r(a6,v)"
         },
         {
-            "piece": "b(e3,v)"
+            "piece": "b(f3,v)"
         }
     ]
 }

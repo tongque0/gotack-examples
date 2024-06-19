@@ -532,7 +532,10 @@ def move_to_str(move):
     """将棋谱中的单步记录转换为指定格式的字符串"""
     direction = 'h' if move[0] == 0 else 'v'
     column = chr(ord('a') + move[2])  # 将列数转换为字母
-    row = str(6 - move[1])  # 将行数转换为对应的棋盘行数
+    if direction=='h':
+        row = str(6 - move[1])  # 将行数转换为对应的棋盘行数
+    else:
+        row = str(6 - move[1]-1)
     player = 'r' if move[3] == 0 else 'b'
     return f"{player}({column}{row},{direction})"
 
@@ -546,7 +549,7 @@ def convert_record_to_json(record, s0, s1):
         "RScore": s0,
         "BScore": s1,
         "Date": "2023-11-3",  # 可以使用当前日期
-        "Event": "大学生计算机博弈大赛",
+        "Event": "tack",
         "game": game_moves
     }
 
@@ -586,7 +589,7 @@ class Robot(threading.Thread):
                 else:
                     h |= (1 << (x * 6 + y))
 
-            algorithm = "quctann"
+            algorithm = "uct"
             print(self.dab.record)
             timeout = int(10 + 60 * self.dab.timeout_offset) * 1000
             try:
