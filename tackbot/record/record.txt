@@ -1,0 +1,20 @@
+{
+    "R": "B0",
+    "B": "B0",
+    "winner": "B",
+    "RScore": 0,
+    "BScore": 0,
+    "Date": "2023-11-3",
+    "Event": "tack",
+    "game": [
+        {
+            "piece": "b(e2,v)"
+        },
+        {
+            "piece": "r(d3,h)"
+        },
+        {
+            "piece": "b(d3,v)"
+        }
+    ]
+}
